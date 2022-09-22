@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        margin: 0;
+        overflow: auto;
+    }
+    .body{
+        margin: 0;
+        height: 100vh;
+        overflow: auto;
+        transition: all 1s;
+    }
+    .road{
+        width: 100%;
+        height: fit-content;
+        background-color: #222;
+        position: relative;
+        display: grid;
+    }
+    .road >*{
+        grid-column: 1/-1;
+        grid-row: 1/-1;
+    }
+    .road .roadimg{
+        width: 100vw;
+        height: 250px;
+    }
+    h2{
+        color: whitesmoke;
+        margin-top: 50px;
+        margin-left: 10px;
+    }
+    .car{
+        position: absolute;
+        left: 10px;
+        top: 40px;
+        width: 200px;
+        height: 50px;
+        background-color: blue;
+        text-align: center;
+        transition: all 1s;
+        border-radius: 7rem;
+        z-index: 100;
+    }
+    .bringin{
+        display: none;
+        transition: all 600ms;
+        margin-top: 200px;
+    }
+    .park{
+        height: 100vh;
+        position: relative;
+        display: grid;
+        background-color: #444;
+    }
+    .parkingspace{
+        width: 350px;
+        height: 150px;
+        position: relative;
+        margin: 20px;
+        cursor: pointer;
+    }
+    .button{
+        padding: 2rem;
+        background-color: #444;
+        width: fit-content;
+        border: 1px solid #eee;
+        border-radius: 1rem;
+        opacity: .5;
+        color: white;
+        font-size: 2rem;
+        z-index: 1900;
+        position: absolute;
+        display: none;
+    }
+    .button.one{
+        top: 3px;
+        left: 50%;
+        display: block;
+    }
+    .button.two{
+        top:  6rem;
+        left: 50%;
+    }
+    .button.three{
+        top: 2rem;
+        left: 50%;
+    }
+    .button.four{
+        top: 2rem;
+        left: 50%;
+    }
+</style>
+<body>
+    <div class="body">
+        
+    <div class="road">
+        <img class="roadimg" src="road.jpg">
+        <h2>WELCOME TO</h2>
+        <img class="car" src="car.jpg" >
+        <div class="button one" onclick="seeName()">Drive</div>
+        <div class="button two" onclick="driveThrough()">Drive into</div>
+        <h2 class="bringin">MY WAY OF ART</h2>
+    </div>
+    <div class="park">
+        <div class="button three" onclick="reverse()">Reverse</div>
+        <div class="button four" onclick="warning()">Click on a parking space</div>
+        <img class="parkingspace" onclick="park(1)" src="park.jpg" alt="">
+        <img class="parkingspace" onclick="park(2)" src="park.jpg" alt="">
+        <img class="parkingspace" onclick="park(3)" src="park.jpg" alt="">
+        <img class="parkingspace" onclick="park(4)" src="park.jpg" alt="">
+    </div>
+    </div>
+</body>
+<script>
+    let parks = document.getElementsByClassName('parkingspace')
+    let body = document.getElementsByClassName('body')[0]
+    let car = document.getElementsByClassName('car')[0]
+    let road = document.getElementsByClassName('road')[0]
+    let bringin = document.getElementsByClassName('bringin')[0]
+    let buttonone = document.getElementsByClassName('button one')[0]
+    let buttontwo = document.getElementsByClassName('button two')[0]
+    let buttonthree = document.getElementsByClassName('button three')[0]
+    let buttonfour = document.getElementsByClassName('button four')[0]
+    let arg = 1
+    let arg2 = 10
+    let arg3 = 10
+    let Clickable = true
+    window.onload=()=>{
+        Clickable = false
+    } 
+    function seeName() {
+        car.style.left = `${200}px`
+        car.style.translate = `${10*arg}%`
+        car.style.top = `${20*arg}px`
+        car.style.rotate = `${10*arg}deg`
+        car.style.transition = `all ${800 * arg}ms`
+        arg++
+        Clickable = true
+        if(car.style.rotate !== '90deg'){
+            setTimeout(()=>{
+                bringin.style.display = 'block'
+                seeName()
+            }, 100)
+        }
+        buttonone.style.display = 'none'
+        buttonthree.style.display = 'none'
+        buttonfour.style.display = 'block'
+    }
+    function park(arg){
+        if (Clickable) {
+        Clickable = false
+        car.style.translate = `0px`
+        car.style.rotate = `180deg`
+        car.style.top = `${190*arg +300-180}px`
+        car.style.left = '40px'
+        buttonthree.style.display = 'block'
+        buttonfour.style.display = 'none'
+        buttonfour.innerHTML = 'Click on a parking space'
+    }
+}
+    function warning() {
+        buttonfour.innerHTML = 'Not me the blue space'
+    }
+    function reverse() {
+        if(!Clickable) {
+         car.style.translate = `${10*arg}%`
+         Clickable = true
+         buttonfour.style.display = 'block'
+         buttonthree.style.display = 'none'
+         car.style.top = `${20*arg}px`
+         car.style.left = '200px'
+         car.style.rotate = '90deg' 
+        }
+    }
+    let intersection = new IntersectionObserver(entry=>{
+        entry.forEach(obj=>{
+            if(!obj.isIntersecting){
+                body.scrollTop+=5000
+            }
+        })
+    },{
+        threshold: 0.5,
+        root: road
+    })
+    intersection.observe(car)    
+</script>
+</html>
